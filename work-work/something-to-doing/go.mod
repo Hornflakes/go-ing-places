@@ -1,5 +1,5 @@
-module work-work/something-to-doing
+module go-ing-places/work-work/something-to-doing
 
 go 1.26.2
 
-require golang.org/x/example/hello v0.0.0-20250915201037-7f05d217867b // indirect
+require golang.org/x/example/hello v0.0.0-20250915201037-7f05d217867b

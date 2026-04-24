@@ -7,3 +7,7 @@
 # [Getting started with multi-module workspaces](https://go.dev/doc/tutorial/workspaces)
 
 [`work-work`](work-work)
+
+# [Accessing a relational database](https://go.dev/doc/tutorial/database-access)
+
+[`databased`](databased)
