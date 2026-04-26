@@ -104,7 +104,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Album fond: %v\n", alb)
+	fmt.Printf("Album found: %v\n", alb)
 
 	albID, err := addAlbum(Album{
 		Title:    "Iris",
