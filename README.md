@@ -19,3 +19,7 @@
 # [Getting started with generics](https://go.dev/doc/tutorial/generics)
 
 [`generic`](generic)
+
+# [Getting started with fuzzing](https://go.dev/doc/tutorial/fuzz)
+
+[`fuzzy-peach`](fuzzy-peach)
