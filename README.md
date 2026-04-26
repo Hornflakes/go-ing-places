@@ -15,3 +15,7 @@
 # [Developing a RESTful API with Go and Gin](https://go.dev/doc/tutorial/web-service-gin)
 
 [`waiter`](waiter)
+
+# [Getting started with generics](https://go.dev/doc/tutorial/generics)
+
+[`generic`](generic)
