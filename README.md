@@ -23,3 +23,7 @@
 # [Getting started with fuzzing](https://go.dev/doc/tutorial/fuzz)
 
 [`fuzzy-peach`](fuzzy-peach)
+
+# [Find and fix vulnerable dependencies with govulncheck](https://go.dev/doc/tutorial/govulncheck)
+
+[`bubble-hearth`](bubble-hearth)
