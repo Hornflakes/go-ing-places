@@ -1,31 +1,24 @@
 package main
 
 import (
+	"database/sql"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
+	"go-ing-places/databased"
 )
-
-// album represents data about a record album.
-type album struct {
-	ID       int64  `json:"id"`
-	Title    string `json:"title"`
-	Artist   string `json:"artist"`
-	Released int16  `json:"released"`
-}
-
-// albums slice to see record album data.
-var albums = []album{
-	{ID: 1, Title: "Going Under", Artist: "Evanescence", Released: 2003},
-	{ID: 2, Title: "Now You re Gone", Artist: "Basshunter", Released: 2007},
-	{ID: 3, Title: "GO BABY", Artist: "Justin Bieber", Released: 2025},
-	{ID: 4, Title: "Gone with the Sin", Artist: "HIM", Released: 1999},
-	{ID: 5, Title: "Iris", Artist: "Goo Goo Dolls", Released: 1998},
-}
 
 // getAlbums responds with the list of all albums as JSON.
 func getAlbums(c *gin.Context) {
+	albums, err := databased.Albums()
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, albums)
 }
 
@@ -33,28 +26,28 @@ func getAlbums(c *gin.Context) {
 // parameter sent by the client, then returns that album as a reponse.
 func getAlbumByID(c *gin.Context) {
 	idParam := c.Param("id")
-
-	// Parse string to int64 (base 10, 64-bit)
 	id, err := strconv.ParseInt(idParam, 10, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "ID must be a number: " + err.Error()})
 		return
 	}
 
-	// Loop over the list of albums, looking for
-	// an album whose ID value matches the parameter.
-	for _, a := range albums {
-		if a.ID == id {
-			c.JSON(http.StatusOK, a)
+	album, err := databased.AlbumByID(id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"message": "album not found"})
 			return
 		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
 	}
-	c.JSON(http.StatusNotFound, gin.H{"message": "album not found"})
+
+	c.JSON(http.StatusOK, album)
 }
 
 // postAlbums adds an album from JSON received in the request body.
 func postAlbums(c *gin.Context) {
-	var newAlbum album
+	var newAlbum databased.Album
 
 	// Call BindJSON to bind the received JSON to
 	// newAlbum.
@@ -63,12 +56,19 @@ func postAlbums(c *gin.Context) {
 		return
 	}
 
-	// Add the new album to the slice.
-	albums = append(albums, newAlbum)
+	id, err := databased.AddAlbum(newAlbum)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	newAlbum.ID = id
 	c.JSON(http.StatusCreated, newAlbum)
 }
 
 func main() {
+	databased.InitDB()
+
 	router := gin.Default()
 	router.GET("/albums", getAlbums)
 	router.GET("/albums/:id", getAlbumByID)
